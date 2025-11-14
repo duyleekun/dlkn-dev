@@ -1,0 +1,82 @@
+---
+- name: Uninstall K3s from all nodes
+  hosts: k3s_cluster
+  gather_facts: false
+  become: true
+
+  pre_tasks:
+    - name: Load default group vars
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/../group_vars/k3s_cluster.yml"
+      failed_when: false
+      changed_when: false
+    
+    - name: Load cluster-specific group vars override
+      # This file only overrides keys that are defined in cluster_{{ cluster_name }}.yml
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/../group_vars/cluster_{{ cluster_name }}.yml"
+      failed_when: false
+      changed_when: false
+
+  tasks:
+    - name: Check if K3s uninstall script exists (server)
+      ansible.builtin.stat:
+        path: /usr/local/bin/k3s-uninstall.sh
+      register: k3s_uninstall_server
+
+    - name: Check if K3s uninstall script exists (agent)
+      ansible.builtin.stat:
+        path: /usr/local/bin/k3s-agent-uninstall.sh
+      register: k3s_uninstall_agent
+
+    - name: Uninstall K3s server
+      ansible.builtin.command: /usr/local/bin/k3s-uninstall.sh
+      when: k3s_uninstall_server.stat.exists
+      changed_when: true
+      failed_when: false
+
+    - name: Uninstall K3s agent
+      ansible.builtin.command: /usr/local/bin/k3s-agent-uninstall.sh
+      when: k3s_uninstall_agent.stat.exists
+      changed_when: true
+      failed_when: false
+
+    - name: Remove K3s config directory
+      ansible.builtin.file:
+        path: "{{ k3s_config_dir }}"
+        state: absent
+
+    - name: Remove K3s binary if still exists
+      ansible.builtin.file:
+        path: /usr/local/bin/k3s
+        state: absent
+      failed_when: false
+
+    - name: Remove K3s uninstall scripts
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/local/bin/k3s-uninstall.sh
+        - /usr/local/bin/k3s-agent-uninstall.sh
+      failed_when: false
+
+    - name: Display completion message
+      ansible.builtin.debug:
+        msg: "K3s has been uninstalled from {{ inventory_hostname }}"
+
+- name: Clean up local files
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Remove local kubeconfig file
+      ansible.builtin.file:
+        path: ./k3s-{{ cluster_name }}-kubeconfig
+        state: absent
+      failed_when: false
+
+    - name: Display completion message
+      ansible.builtin.debug:
+        msg: "Local cleanup completed"

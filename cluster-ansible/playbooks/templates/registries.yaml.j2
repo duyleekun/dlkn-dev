@@ -1,0 +1,24 @@
+---
+# Registry configuration for distributed mirroring
+mirrors:
+{% for registry, config in registry_mirrors.items() %}
+  "{{ registry }}":
+    endpoint:
+{% for endpoint in config.endpoint %}
+      - "{{ endpoint }}"
+{% endfor %}
+{% endfor %}
+
+# Registry authentication configuration
+configs:
+{% for registry, config in registry_mirrors.items() %}
+{% if config.auth is defined %}
+  # Authentication for {{ registry }}
+  "{{ registry }}":
+    auth:
+      username: "{{ config.auth.username }}"
+      password: "{{ config.auth.password }}"
+{% endif %}
+{% endfor %}
+
+
