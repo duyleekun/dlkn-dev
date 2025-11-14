@@ -1,0 +1,16 @@
+---
+# K3s Agent Configuration
+server: https://{{ hostvars[groups['k3s_master'][0]]['ansible_host'] }}:6443
+
+# Token for secure cluster communication
+token: "{{ k3s_token }}"
+
+# Node configuration
+node-name: "{{ inventory_hostname }}"
+node-ip: "{{ ansible_host }}"
+
+# Kubelet arguments
+kubelet-arg:
+  - "feature-gates=GracefulNodeShutdown=true"
+
+

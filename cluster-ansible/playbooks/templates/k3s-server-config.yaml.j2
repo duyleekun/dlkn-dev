@@ -1,0 +1,30 @@
+---
+# K3s Server Configuration
+write-kubeconfig-mode: "0644"
+tls-san:
+  - "{{ ansible_host }}"
+  - "{{ ansible_default_ipv4.address }}"
+
+# Disable servicelb (traefik is disabled by default, but we'll be explicit)
+# disable:
+  # - servicelb
+  # - traefik
+
+# Enable embedded registry
+embedded-registry: true
+
+# Cluster init for first server
+cluster-init: true
+
+# Token for secure cluster communication
+token: "{{ k3s_token }}"
+
+# Node configuration
+node-name: "{{ inventory_hostname }}"
+node-ip: "{{ ansible_host }}"
+
+# Additional settings
+kubelet-arg:
+  - "feature-gates=GracefulNodeShutdown=true"
+
+

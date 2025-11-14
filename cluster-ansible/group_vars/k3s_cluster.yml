@@ -1,0 +1,44 @@
+---
+# K3s cluster configuration
+k3s_version: v1.28.3+k3s1
+k3s_token: "MySecureK3sToken123!"  # Change this to a secure token
+
+# Distributed registry mirroring
+registry_mirrors:
+  docker.io:
+    endpoint:
+      - "https://registry-1.docker.io"
+    # Optional: Authentication for private repositories
+    # auth:
+    #   username: "your_username"
+    #   password: "your_password"
+  ghcr.io:
+    endpoint:
+      - "https://ghcr.io"
+    # Optional: Authentication for private repositories
+    # auth:
+    #   username: "your_username"
+    #   password: "your_password"
+    # For GitHub Container Registry, use token as password:
+    # auth:
+    #   username: "your_github_username"
+    #   password: "ghp_your_github_token"
+  gcr.io:
+    endpoint:
+      - "https://gcr.io"
+    # Optional: Authentication for private repositories
+    # auth:
+    #   username: "_json_key"
+    #   password: "your_service_account_json_key"
+  quay.io:
+    endpoint:
+      - "https://quay.io"
+    # Optional: Authentication for private repositories
+    # auth:
+    #   username: "your_quay_username"
+    #   password: "your_quay_password_or_token"
+
+# K3s server config directory
+k3s_config_dir: /etc/rancher/k3s
+
+

@@ -1,0 +1,41 @@
+# Ansible
+*.retry
+/tmp/
+/ansible_facts/
+
+# Kubeconfig
+kubeconfig
+*.kubeconfig
+
+# Local testing
+.vagrant/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Docker
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (if using ansible-vault)
+*vault*.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+.vault_pass
+!.vault-pass.example
