@@ -22,20 +22,23 @@ RUN echo "${USER_NAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
 
-# install linux brew
-RUN --mount=type=cache,target=/home/${USER_NAME}/.cache/Homebrew curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
-
-
+# Set Homebrew environment variables before installation
 ENV HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 ENV HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
 ENV HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
-ENV INFOPATH="/home/linuxbrew/.linuxbrew/share/info:$INFOPATH"
+ENV INFOPATH="/home/linuxbrew/.linuxbrew/share/info"
+ENV HOMEBREW_CACHE="/home/${USER_NAME}/.cache/Homebrew"
+# Create cache directory for Homebrew
+RUN mkdir -p $HOMEBREW_CACHE && \
+    chmod 755 $HOMEBREW_CACHE
 
-# update brew repository
-RUN --mount=type=cache,id=brew,target=/home/${USER_NAME}/.cache/Homebrew brew update && \
+# install linux brew
+RUN --mount=type=cache,target=/home/${USER_NAME}/.cache/Homebrew \
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
+    brew update && \
     brew install kubectl helm uv k9s
-
+    
 # install python 3.11
 ENV VIRTUAL_ENV=/home/${USER_NAME}/.venv
 RUN uv venv --python 3.11
