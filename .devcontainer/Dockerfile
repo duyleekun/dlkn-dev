@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 # Install sudo, locales, and create user
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
---mount=type=cache,target=/var/lib/apt,sharing=locked apt update && apt install -y sudo curl git build-essential nano vim locales libonig-dev && \
+--mount=type=cache,target=/var/lib/apt,sharing=locked apt update && apt install -y sudo curl git build-essential nano vim locales libonig-dev man-db && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8
 
@@ -37,7 +37,8 @@ RUN mkdir -p $HOMEBREW_CACHE && \
 RUN --mount=type=cache,target=/home/${USER_NAME}/.cache/Homebrew \
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
     brew update && \
-    brew install kubectl helm uv k9s
+    brew tap fluxcd/tap && \
+    brew install kubectl helm uv k9s glab fluxcd/tap/flux argocd
     
 # install python 3.11
 ENV VIRTUAL_ENV=/home/${USER_NAME}/.venv
