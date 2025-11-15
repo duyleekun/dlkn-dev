@@ -9,7 +9,7 @@
             "USER_GID": "${localEnv:REMOTE_GID}"
         }
     },
-    "appPort": [8000],
+    "appPort": [],
     "mounts": [
         "source=${localEnv:HOME}/.ssh/config,target=/home/${localEnv:REMOTE_USER}/.ssh/config,type=bind,readonly"
     ],
