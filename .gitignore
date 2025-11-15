@@ -2,3 +2,4 @@
 kubeconfig-*
 cluster-ansible/group_vars/cluster_*.yml
 cluster-ansible/inventory/cluster-*.ini
+.devcontainer/.env

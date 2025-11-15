@@ -1,18 +1,11 @@
 {
-    "name": "cluster-ansible",
-    "dockerFile": "Dockerfile",
-    "context": "..",
-    "build": {
-        "args": {
-            "USER_NAME": "${localEnv:REMOTE_USER}",
-            "USER_UID": "${localEnv:REMOTE_UID}",
-            "USER_GID": "${localEnv:REMOTE_GID}"
-        }
-    },
+    "name": "devcontainer",
+    "dockerComposeFile": ["./docker-compose.yaml"],
+    "workspaceFolder": "/workspaces/smtkr-x99",
+    "service": "devcontainer",
+    "initializeCommand": "echo REMOTE_USER=$(whoami) > .devcontainer/.env && echo REMOTE_UID=$(id -u) >> .devcontainer/.env && echo REMOTE_GID=$(id -g) >> .devcontainer/.env",
+    "runArgs": ["--env-file", ".devcontainer/.env"],
     "appPort": [],
-    "mounts": [
-        "source=${localEnv:HOME}/.ssh/config,target=/home/${localEnv:REMOTE_USER}/.ssh/config,type=bind,readonly"
-    ],
     "extensions": [
         "ms-azuretools.vscode-docker",
         "ms-kubernetes-tools.vscode-kubernetes-tools",
@@ -27,6 +20,5 @@
     "settings": {
         "python.venvPath": "/home/${localEnv:REMOTE_USER}/.env",
         "formatOnSave": true
-    },
-    "postCreateCommand": "echo 'source /home/${localEnv:REMOTE_USER}/.venv/bin/activate' >> /home/${localEnv:REMOTE_USER}/.bashrc"
+    }
 }

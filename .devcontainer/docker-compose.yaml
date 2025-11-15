@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  devcontainer:
+    build: 
+      args:
+        USER_NAME: ${REMOTE_USER}
+        USER_UID: ${REMOTE_UID}
+        USER_GID: ${REMOTE_GID}
+      context: ./
+    command: ["sleep", "infinity"]
+    volumes:
+      - ../:/workspaces/smtkr-x99:cached
+    
